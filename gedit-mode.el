@@ -53,12 +53,11 @@
 
 ;;; USAGE
 ;;
-;; Add the following code to your init file:
-;; ----------------------------------------------------------
-;; (add-to-list 'load-path "/path/to/gedit-mode/dir/")
-;; (require 'gedit-mode)
-;; (global-gedit-mode)
-;; ----------------------------------------------------------
+;; gedit-mode is now hosted on MELPA! Type `M-x package-install
+;; gedit-mode`, then add the following code to your init file:
+;;
+;;     (require 'gedit-mode)
+;;     (global-gedit-mode)
 
 ;;; TODO
 ;;
