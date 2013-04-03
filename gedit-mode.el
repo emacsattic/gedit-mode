@@ -99,25 +99,11 @@
   (shell-pop-set-window-height 20) ;; in percent
   (shell-pop-set-window-position "bottom")
   (ansi-color-for-comint-mode-on)
-  (dirtrack-mode)
 
-  ;; TODO: Review these for relevance.
-  (setq comint-buffer-maximum-size 10000
-        comint-completion-addsuffix t
-        comint-completion-autolist t
-        comint-input-ignoredups t
-        comint-input-ring-size 5000
-        comint-move-point-for-output t
-        comint-prompt-read-only nil
-        comint-scroll-show-maximum-output t
-        comint-scroll-to-bottom-on-input t
-        completion-ignore-case t
+  (setq comint-scroll-to-bottom-on-input t
         explicit-shell-file-name "/bin/bash"
-        read-file-name-completion-ignore-case t
         term-input-ignoredups t
-        term-scroll-show-maximum-output t
-        term-scroll-to-bottom-on-output t
-        terminal-redisplay-interval 1000))
+        term-scroll-show-maximum-output t))
 
 (defvar gedit-untitled-count 1
   "This value is used to count how many untitled buffers you have open.")
