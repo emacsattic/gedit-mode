@@ -333,3 +333,5 @@
 (define-globalized-minor-mode global-gedit-mode gedit-mode gedit-mode)
 
 (provide 'gedit-mode)
+
+;;; gedit-mode.el ends here
