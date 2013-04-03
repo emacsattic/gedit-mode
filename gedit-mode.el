@@ -73,8 +73,6 @@
 ;; * to think up some sensible new bindings for all the stuff that
 ;;   I've clobbered here.
 ;;
-;; * to package this up and get it on MELPA.
-;;
 ;; * to clean up some of the sr-speedbar and shell-pop config code,
 ;;   particularly allowing those settings to be reverted when
 ;;   gedit-mode is disabled.
