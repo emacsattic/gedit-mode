@@ -281,10 +281,14 @@
     (copy-region-as-kill (gedit-region-or-line-beginning)
                          (gedit-region-or-line-end 1))))
 
+(defun gedit-save-that-buffer (buffer)
+  "Save the specified buffer."
+  (with-current-buffer buffer (save-buffer)))
+
 (defun gedit-save-all-buffers ()
   "Cycle through all buffers and save them."
   (interactive)
-  (mapc 'save-buffer
+  (mapc 'gedit-save-that-buffer
         (remove-if-not 'buffer-file-name (buffer-list)))
   (message "All buffers saved."))
 
