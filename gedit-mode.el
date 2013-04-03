@@ -284,11 +284,8 @@
 (defun gedit-save-all-buffers ()
   "Cycle through all buffers and save them."
   (interactive)
-  (let ((buffers (buffer-list)))
-    (while buffers
-      (with-current-buffer (car buffers)
-        (if (buffer-file-name) (save-buffer)))
-      (setq buffers (cdr buffers))))
+  (mapc 'save-buffer
+        (remove-if-not 'buffer-file-name (buffer-list)))
   (message "All buffers saved."))
 
 (defun gedit-new-file ()
@@ -321,7 +318,7 @@
   (mapc 'kill-buffer
         (remove-if-not 'buffer-file-name (buffer-list)))
   (setq gedit-untitled-count 1)
-  (buffer-menu))
+  (gedit-new-file))
 
 (defgroup gedit nil
   "Minor mode for using GEdit-alike keybindings in Emacs."
