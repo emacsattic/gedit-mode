@@ -58,6 +58,10 @@
 ;;
 ;;     (require 'gedit-mode)
 ;;     (global-gedit-mode)
+;;
+;; For best results, I highly recommend sr-speedbar, shell-pop, and
+;; visual-regexp (though they are not hard dependencies of this
+;; package).
 
 ;;; TODO
 ;;
@@ -181,6 +185,9 @@
     (define-key map [kp-home] 'gedit-back-to-indentation-or-home)
     map)
   "Keymap for GEdit minor mode.")
+
+(when (require 'visual-regexp nil :noerror)
+  (substitute-key-definition 'query-replace 'vr/query-replace gedit-mode-map))
 
 (defun gedit-move-text (arg)
   "Transpose lines/region up or down in the buffer."
