@@ -306,11 +306,19 @@
     (kill-this-buffer)
     (buffer-menu)))
 
+(defun gedit-buffer-untitled-p (buffer)
+  "Is this buffer untitled?"
+  (string-prefix-p "Untitled Document " (buffer-name buffer)))
+
 (defun gedit-kill-all-buffers ()
   "Close all the files."
   (interactive)
+  ;; Close all buffers associated with files.
   (mapc 'kill-buffer
         (remove-if-not 'buffer-file-name (buffer-list)))
+  ;; Close all untitled documents that haven't been saved yet.
+  (mapc 'kill-buffer
+        (remove-if-not 'gedit-buffer-untitled-p (buffer-list)))
   (setq gedit-untitled-count 1)
   (gedit-new-file))
 
