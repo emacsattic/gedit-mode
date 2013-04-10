@@ -308,7 +308,9 @@
 
 (defun gedit-buffer-untitled-p (buffer)
   "Is this buffer untitled?"
-  (string-prefix-p "Untitled Document " (buffer-name buffer)))
+  (or
+   (string-prefix-p "Untitled Document " (buffer-name buffer))
+   (string= "*scratch*" (buffer-name buffer))))
 
 (defun gedit-kill-all-buffers ()
   "Close all the files."
