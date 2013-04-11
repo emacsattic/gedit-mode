@@ -2,10 +2,13 @@
 
 ;; Copyright (C) 2013 Robert Bruce Park
 
-;; Author   : Robert Bruce Park <r@robru.ca>
-;; URL      : https://github.com/robru/gedit-mode
-;; Version  : 0.1
-;; Keywords : gedit, keys, keybindings, easy, cua
+;; Author: Robert Bruce Park <r@robru.ca>
+;; URL: https://github.com/robru/gedit-mode
+;; Version: 0.1
+;; Keywords: gedit, keys, keybindings, easy, cua
+;; Package-Requires: ((tabbar "0")
+;;                    (sr-speedbar "0")
+;;                    (shell-pop "0"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -59,9 +62,11 @@
 ;;     (require 'gedit-mode)
 ;;     (global-gedit-mode)
 ;;
-;; For best results, I highly recommend sr-speedbar, shell-pop, and
-;; visual-regexp (though they are not hard dependencies of this
-;; package).
+;; For the complete experience, you'll want sr-speedbar, shell-pop,
+;; and tabbar packages. I've listed those as requirements above,
+;; although the code I've written here is smart enough not to explode
+;; if they're missing. I also personally recommend visual-regexp and
+;; ace-jump-mode, although those have nothing to do with GEdit ;-)
 
 ;;; TODO
 ;;

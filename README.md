@@ -33,6 +33,12 @@ then add the following code to your init file:
     (require 'gedit-mode)
     (global-gedit-mode)
 
+For the complete experience, you'll want sr-speedbar, shell-pop, and
+tabbar packages. I've listed those as requirements in the package,
+although gedit-mode is smart enough not to explode if they're missing.
+I also personally recommend visual-regexp and ace-jump-mode, although
+those have nothing to do with GEdit ;-)
+
 Where can I find out what keybindings GEdit uses?
 -------------------------------------------------
 
