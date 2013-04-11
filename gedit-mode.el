@@ -79,12 +79,30 @@
 ;; * to clean up some of the sr-speedbar and shell-pop config code,
 ;;   particularly allowing those settings to be reverted when
 ;;   gedit-mode is disabled.
-;;
-;; * define gedit-like behaviors for the tabbar.
 
 ;;; For more information
 ;;
 ;; https://help.gnome.org/users/gedit/stable/gedit-shortcut-keys.html.en
+
+(when (require 'tabbar nil :noerror)
+  (set-face-attribute 'tabbar-separator nil
+                      :height 1
+                      :inherit 'mode-line
+                      :box nil)
+  (set-face-attribute 'tabbar-default nil
+                      :inherit 'mode-line
+                      :box nil)
+  (set-face-attribute 'tabbar-button nil
+                      :inherit 'mode-line
+                      :box nil)
+  (set-face-attribute 'tabbar-selected nil
+                      :inherit 'mode-line-buffer-id
+                      :box nil)
+  (set-face-attribute 'tabbar-unselected nil
+                      :inherit 'mode-line-inactive
+                      :box nil)
+  (add-hook 'global-gedit-mode-hook
+            (lambda () (tabbar-mode (if global-gedit-mode 1 -1)))))
 
 (when (require 'sr-speedbar nil :noerror)
   (setq speedbar-show-unknown-files t
@@ -303,8 +321,7 @@
   (interactive)
   (if server-buffer-clients
       (server-edit)
-    (kill-this-buffer)
-    (buffer-menu)))
+    (kill-this-buffer)))
 
 (defun gedit-buffer-untitled-p (buffer)
   "Is this buffer untitled?"
@@ -312,22 +329,19 @@
    (string-prefix-p "Untitled Document " (buffer-name buffer))
    (string= "*scratch*" (buffer-name buffer))))
 
+(defun gedit-kill-certain-buffers (predicate)
+  "Kill all buffers matching predicate, except ones with unsaved changes."
+  (mapc 'kill-buffer
+        (remove-if 'buffer-modified-p
+                   (remove-if-not predicate (buffer-list)))))
+
 (defun gedit-kill-all-buffers ()
   "Close all the files."
   (interactive)
-  ;; Close all buffers associated with files.
-  (mapc 'kill-buffer
-        (remove-if-not 'buffer-file-name (buffer-list)))
-  ;; Close all untitled documents that haven't been saved yet.
-  (mapc 'kill-buffer
-        (remove-if-not 'gedit-buffer-untitled-p (buffer-list)))
+  (gedit-kill-certain-buffers 'buffer-file-name)
+  (gedit-kill-certain-buffers 'gedit-buffer-untitled-p)
   (setq gedit-untitled-count 0)
   (gedit-new-file))
-
-(add-hook 'after-init-hook
-          (lambda ()
-            (with-current-buffer "*scratch*"
-              (rename-buffer "Untitled Document 1"))))
 
 (defgroup gedit nil
   "Minor mode for using GEdit-alike keybindings in Emacs."
@@ -343,13 +357,6 @@
   :global t
   :keymap gedit-mode-map
 
-  ;; When disabling gedit-mode, close all untitled documents and
-  ;; re-open the *scratch* buffer.
-  (unless global-gedit-mode
-    (mapc 'kill-buffer
-          (remove-if-not 'gedit-buffer-untitled-p (buffer-list)))
-    (switch-to-buffer (get-buffer-create "*scratch*")))
-
   (setq input-decode-map
         (if gedit-mode
             gedit-input-decode-map
@@ -358,6 +365,15 @@
 
 ;;;###autoload
 (define-globalized-minor-mode global-gedit-mode gedit-mode gedit-mode)
+
+(add-hook 'global-gedit-mode-hook
+          (lambda ()
+            "Set mode state only when enabling or disabling globally."
+            (gedit-kill-certain-buffers 'gedit-buffer-untitled-p)
+
+            (switch-to-buffer
+             (get-buffer-create
+              (if global-gedit-mode "Untitled Document 1" "*scratch*")))))
 
 (provide 'gedit-mode)
 
