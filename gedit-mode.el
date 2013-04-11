@@ -89,6 +89,12 @@
 ;;
 ;; https://help.gnome.org/users/gedit/stable/gedit-shortcut-keys.html.en
 
+(defun gedit-tabbar-buffer-list ()
+  "Hide the speedbar, because it's not helpful to tab to."
+  (remove-if
+   (lambda (buffer) (string= "*SPEEDBAR*" (buffer-name buffer)))
+   (tabbar-buffer-list)))
+
 (defun gedit-tabbar-buffer-groups ()
   "Group Emacs special buffers separately than file-related buffers."
   (list (cond ((buffer-file-name (current-buffer)) "files")
@@ -96,7 +102,8 @@
               (t "emacs"))))
 
 (when (require 'tabbar nil :noerror)
-  (setq tabbar-buffer-groups-function 'gedit-tabbar-buffer-groups)
+  (setq tabbar-buffer-groups-function 'gedit-tabbar-buffer-groups
+        tabbar-buffer-list-function 'gedit-tabbar-buffer-list)
   (set-face-attribute 'tabbar-separator nil
                       :height 1
                       :inherit 'mode-line
