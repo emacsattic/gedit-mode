@@ -89,7 +89,14 @@
 ;;
 ;; https://help.gnome.org/users/gedit/stable/gedit-shortcut-keys.html.en
 
+(defun gedit-tabbar-buffer-groups ()
+  "Group Emacs special buffers separately than file-related buffers."
+  (list (cond ((buffer-file-name (current-buffer)) "files")
+              ((gedit-buffer-untitled-p (current-buffer)) "files")
+              (t "emacs"))))
+
 (when (require 'tabbar nil :noerror)
+  (setq tabbar-buffer-groups-function 'gedit-tabbar-buffer-groups)
   (set-face-attribute 'tabbar-separator nil
                       :height 1
                       :inherit 'mode-line
