@@ -285,11 +285,11 @@
 (defun gedit-new-file ()
   "Create a new empty buffer, untitled but numbered for uniqueness."
   (interactive)
+  (incf gedit-untitled-count)
   (switch-to-buffer
    (get-buffer-create
     (concat "Untitled Document "
-            (number-to-string gedit-untitled-count))))
-  (incf gedit-untitled-count))
+            (number-to-string gedit-untitled-count)))))
 
 (defun gedit-find-file ()
   "Prompt for root if opening a file for which I lack write permissions."
@@ -321,8 +321,13 @@
   ;; Close all untitled documents that haven't been saved yet.
   (mapc 'kill-buffer
         (remove-if-not 'gedit-buffer-untitled-p (buffer-list)))
-  (setq gedit-untitled-count 1)
+  (setq gedit-untitled-count 0)
   (gedit-new-file))
+
+(add-hook 'after-init-hook
+          (lambda ()
+            (with-current-buffer "*scratch*"
+              (rename-buffer "Untitled Document 1"))))
 
 (defgroup gedit nil
   "Minor mode for using GEdit-alike keybindings in Emacs."
@@ -337,6 +342,14 @@
   :version "0.1"
   :global t
   :keymap gedit-mode-map
+
+  ;; When disabling gedit-mode, close all untitled documents and
+  ;; re-open the *scratch* buffer.
+  (unless global-gedit-mode
+    (mapc 'kill-buffer
+          (remove-if-not 'gedit-buffer-untitled-p (buffer-list)))
+    (switch-to-buffer (get-buffer-create "*scratch*")))
+
   (setq input-decode-map
         (if gedit-mode
             gedit-input-decode-map
