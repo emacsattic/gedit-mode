@@ -219,6 +219,10 @@
 (when (require 'visual-regexp nil :noerror)
   (substitute-key-definition 'query-replace 'vr/query-replace gedit-mode-map))
 
+(when (require 'tabbar nil :noerror)
+  (substitute-key-definition 'next-buffer 'tabbar-forward-tab gedit-mode-map)
+  (substitute-key-definition 'previous-buffer 'tabbar-backward-tab gedit-mode-map))
+
 (defun gedit-move-text (arg)
   "Transpose lines/region up or down in the buffer."
    (cond
