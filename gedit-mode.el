@@ -151,6 +151,9 @@
         term-input-ignoredups t
         term-scroll-show-maximum-output t))
 
+(defvar gedit-idle-timer nil
+  "The value of the idle timer we use for refreshing the speedbar.")
+
 (defvar gedit-untitled-count 1
   "This value is used to count how many untitled buffers you have open.")
 
@@ -374,6 +377,12 @@
   (setq gedit-untitled-count 0)
   (gedit-new-file))
 
+(defun gedit-speedbar-refresh ()
+  "Show new files in the speedbar."
+  (when (display-graphic-p)
+    (with-current-buffer (get-buffer-create "*SPEEDBAR*")
+      (speedbar-refresh))))
+
 (defgroup gedit nil
   "Minor mode for using GEdit-alike keybindings in Emacs."
   :prefix "gedit-"
@@ -400,6 +409,11 @@
 (add-hook 'global-gedit-mode-hook
           (lambda ()
             "Set mode state only when enabling or disabling globally."
+            (if global-gedit-mode
+                (setq gedit-idle-timer
+                      (run-with-idle-timer 1 :repeat 'gedit-speedbar-refresh))
+              (cancel-timer gedit-idle-timer))
+
             (gedit-kill-certain-buffers 'gedit-buffer-untitled-p)
 
             (switch-to-buffer
