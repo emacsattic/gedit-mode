@@ -1,4 +1,4 @@
-;;; gedit-mode.el --- make emacs more accessible to former gedit users -*- coding: utf-8-unix -*-
+;;; gedit-mode.el --- Emulate the look & feel of GEdit in Emacs
 
 ;; Copyright (C) 2013 Robert Bruce Park
 
