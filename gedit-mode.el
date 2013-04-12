@@ -6,9 +6,7 @@
 ;; URL: https://github.com/robru/gedit-mode
 ;; Version: 0.1
 ;; Keywords: gedit, keys, keybindings, easy, cua
-;; Package-Requires: ((tabbar "0")
-;;                    (sr-speedbar "0")
-;;                    (shell-pop "0"))
+;; Package-Requires: ((tabbar "0") (sr-speedbar "0") (shell-pop "0"))
 
 ;; This file is NOT part of GNU Emacs.
 
