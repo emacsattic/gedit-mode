@@ -89,9 +89,17 @@
 ;;
 ;; https://help.gnome.org/users/gedit/stable/gedit-shortcut-keys.html.en
 
+(defun gedit-remove-if-not (condp lst)
+  "Behave like (remove-if-not) without depending on CL."
+  (delq nil (mapcar (lambda (x) (and (funcall condp x) x)) lst)))
+
+(defun gedit-remove-if (condp lst)
+  "Behave like (remove-if) without depending on CL."
+  (delq nil (mapcar (lambda (x) (and (not (funcall condp x)) x)) lst)))
+
 (defun gedit-tabbar-buffer-list ()
   "Hide the speedbar, because it's not helpful to tab to."
-  (remove-if
+  (gedit-remove-if
    (lambda (buffer) (string= "*SPEEDBAR*" (buffer-name buffer)))
    (tabbar-buffer-list)))
 
@@ -320,7 +328,7 @@
   "Cycle through all buffers and save them."
   (interactive)
   (mapc 'gedit-save-that-buffer
-        (remove-if-not 'buffer-file-name (buffer-list)))
+        (gedit-remove-if-not 'buffer-file-name (buffer-list)))
   (message "All buffers saved."))
 
 (defun gedit-new-file ()
@@ -355,8 +363,8 @@
 (defun gedit-kill-certain-buffers (predicate)
   "Kill all buffers matching predicate, except ones with unsaved changes."
   (mapc 'kill-buffer
-        (remove-if 'buffer-modified-p
-                   (remove-if-not predicate (buffer-list)))))
+        (gedit-remove-if 'buffer-modified-p
+                         (gedit-remove-if-not predicate (buffer-list)))))
 
 (defun gedit-kill-all-buffers ()
   "Close all the files."
