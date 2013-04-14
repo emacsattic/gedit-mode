@@ -235,6 +235,9 @@
 
     ;; These keybindings aren't actually present in GEdit, but in my
     ;; opinion complement GEdit's defaults nicely.
+    (define-key map (kbd "C-<tab>") 'next-buffer)
+    (define-key map (kbd "C-S-<iso-lefttab>") 'previous-buffer)
+    (define-key map (kbd "C-S-<tab>") 'previous-buffer)
     (define-key map (kbd "C-S-n") 'make-frame-command)
     (define-key map (kbd "C-b") 'buffer-menu)
     (define-key map (kbd "M-w") 'gedit-kill-all-buffers)
