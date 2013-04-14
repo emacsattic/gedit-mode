@@ -141,7 +141,7 @@
   (shell-pop-set-internal-mode "term")
   (shell-pop-set-internal-mode-shell "/bin/bash")
   (shell-pop-set-window-height 20) ;; in percent
-  (shell-pop-set-window-position "bottom")
+  (shell-pop-set-window-position "top")
   (ansi-color-for-comint-mode-on)
 
   (setq comint-scroll-to-bottom-on-input t
