@@ -110,6 +110,8 @@
 (when (require 'tabbar nil :noerror)
   (setq tabbar-buffer-groups-function 'gedit-tabbar-buffer-groups
         tabbar-buffer-list-function 'gedit-tabbar-buffer-list)
+  (defadvice tabbar-buffer-tab-label (after fixup_tab_label_space activate)
+    (setq ad-return-value (concat " " ad-return-value " ")))
   (set-face-attribute 'tabbar-separator nil
                       :height 1
                       :inherit 'mode-line
