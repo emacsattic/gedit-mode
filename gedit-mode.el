@@ -190,6 +190,7 @@
 
 (defvar gedit-mode-map
   (let ((map (make-sparse-keymap)))
+    ;; This section is the faithful recreation of GEdit keybindings.
     (define-key map (kbd "C-+") 'text-scale-increase)
     (define-key map (kbd "C--") 'text-scale-decrease)
     (define-key map (kbd "C-=") 'text-scale-increase)
@@ -229,6 +230,12 @@
     (define-key map [f9] 'sr-speedbar-toggle)
     (define-key map [home] 'gedit-back-to-indentation-or-home)
     (define-key map [kp-home] 'gedit-back-to-indentation-or-home)
+
+    ;; These keybindings aren't actually present in GEdit, but in my
+    ;; opinion complement GEdit's defaults nicely.
+    (define-key map (kbd "C-S-n") 'make-frame-command)
+    (define-key map (kbd "C-b") 'buffer-menu)
+    (define-key map (kbd "M-w") 'gedit-kill-all-buffers)
     map)
   "Keymap for GEdit minor mode.")
 
