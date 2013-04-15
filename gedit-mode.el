@@ -369,9 +369,8 @@
 
 (defun gedit-buffer-untitled-p (buffer)
   "Is this buffer untitled?"
-  (or
-   (string-prefix-p "Untitled Document " (buffer-name buffer))
-   (string= "*scratch*" (buffer-name buffer))))
+  (or (string-prefix-p "Untitled Document " (buffer-name buffer))
+      (string= "*scratch*" (buffer-name buffer))))
 
 (defun gedit-kill-certain-buffers (predicate)
   "Kill all buffers matching predicate, except ones with unsaved changes."
