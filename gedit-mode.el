@@ -178,6 +178,7 @@
     (define-key map (kbd "C-S-n") 'make-frame-command)
     (define-key map (kbd "C-b") 'buffer-menu)
     (define-key map (kbd "C-t") 'shell-pop)
+    (define-key map (kbd "M-s") 'gedit-save-all-buffers)
     (define-key map (kbd "M-w") 'gedit-kill-all-buffers)
     map)
   "Keymap for GEdit minor mode.")
