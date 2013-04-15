@@ -342,9 +342,16 @@
 (defun gedit-save-all-buffers ()
   "Cycle through all buffers and save them."
   (interactive)
-  (mapc 'gedit-save-that-buffer
-        (gedit-remove-if-not 'buffer-file-name (buffer-list)))
-  (message "All buffers saved."))
+  (let ((to-save (gedit-remove-if-not
+                  'buffer-file-name
+                  (gedit-remove-if-not
+                   'buffer-modified-p
+                   (buffer-list)))))
+    (mapc 'gedit-save-that-buffer to-save)
+    (message (concat "Wrote "
+                     (mapconcat 'file-name-nondirectory
+                                (mapcar 'buffer-file-name to-save)
+                                ", ")))))
 
 (defun gedit-new-file ()
   "Create a new empty buffer, untitled but numbered for uniqueness."
