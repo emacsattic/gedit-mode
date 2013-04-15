@@ -418,10 +418,11 @@
 (add-hook 'global-gedit-mode-hook
           (lambda ()
             "Set mode state only when enabling or disabling globally."
-            (if global-gedit-mode
-                (setq gedit-idle-timer
-                      (run-with-idle-timer 1 :repeat 'gedit-speedbar-refresh))
-              (cancel-timer gedit-idle-timer))
+            ;; Disable timer because it screws up the tag display.
+            ;; (if global-gedit-mode
+            ;;     (setq gedit-idle-timer
+            ;;           (run-with-idle-timer 1 :repeat 'gedit-speedbar-refresh))
+            ;;   (cancel-timer gedit-idle-timer))
 
             (gedit-kill-certain-buffers 'gedit-buffer-untitled-p)
 
