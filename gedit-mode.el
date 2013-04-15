@@ -87,70 +87,6 @@
 ;;
 ;; https://help.gnome.org/users/gedit/stable/gedit-shortcut-keys.html.en
 
-(defun gedit-remove-if-not (condp lst)
-  "Behave like (remove-if-not) without depending on CL."
-  (delq nil (mapcar (lambda (x) (and (funcall condp x) x)) lst)))
-
-(defun gedit-remove-if (condp lst)
-  "Behave like (remove-if) without depending on CL."
-  (delq nil (mapcar (lambda (x) (and (not (funcall condp x)) x)) lst)))
-
-(defun gedit-tabbar-buffer-list ()
-  "Hide the speedbar, because it's not helpful to tab to."
-  (gedit-remove-if
-   (lambda (buffer) (string= "*SPEEDBAR*" (buffer-name buffer)))
-   (tabbar-buffer-list)))
-
-(defun gedit-tabbar-buffer-groups ()
-  "Group Emacs special buffers separately than file-related buffers."
-  (list (cond ((buffer-file-name (current-buffer)) "files")
-              ((gedit-buffer-untitled-p (current-buffer)) "files")
-              (t "emacs"))))
-
-(when (require 'tabbar nil :noerror)
-  (setq tabbar-buffer-groups-function 'gedit-tabbar-buffer-groups
-        tabbar-buffer-list-function 'gedit-tabbar-buffer-list)
-  (defadvice tabbar-buffer-tab-label (after fixup_tab_label_space activate)
-    (setq ad-return-value (concat " " ad-return-value " ")))
-  (set-face-attribute 'tabbar-separator nil
-                      :height 1
-                      :inherit 'mode-line
-                      :box nil)
-  (set-face-attribute 'tabbar-default nil
-                      :inherit 'mode-line
-                      :box nil)
-  (set-face-attribute 'tabbar-button nil
-                      :inherit 'mode-line
-                      :box nil)
-  (set-face-attribute 'tabbar-selected nil
-                      :inherit 'mode-line-buffer-id
-                      :box nil)
-  (set-face-attribute 'tabbar-unselected nil
-                      :inherit 'mode-line-inactive
-                      :box nil)
-  (add-hook 'global-gedit-mode-hook
-            (lambda () (tabbar-mode (if global-gedit-mode 1 -1)))))
-
-(when (require 'sr-speedbar nil :noerror)
-  (setq speedbar-show-unknown-files t
-        speedbar-use-images nil
-        sr-speedbar-auto-refresh nil
-        sr-speedbar-right-side nil)
-  (when (display-graphic-p)
-    (add-hook 'after-init-hook 'sr-speedbar-toggle)))
-
-(when (require 'shell-pop nil :noerror)
-  (shell-pop-set-internal-mode "term")
-  (shell-pop-set-internal-mode-shell "/bin/bash")
-  (shell-pop-set-window-height 20) ;; in percent
-  (shell-pop-set-window-position "top")
-  (ansi-color-for-comint-mode-on)
-
-  (setq comint-scroll-to-bottom-on-input t
-        explicit-shell-file-name "/bin/bash"
-        term-input-ignoredups t
-        term-scroll-show-maximum-output t))
-
 (defvar gedit-idle-timer nil
   "The value of the idle timer we use for refreshing the speedbar.")
 
@@ -193,7 +129,6 @@
 (defvar gedit-mode-map
   (let ((map (make-sparse-keymap)))
     ;; This section is the faithful recreation of GEdit keybindings.
-    (define-key map (kbd "<return>") 'newline-and-indent)
     (define-key map (kbd "C-+") 'text-scale-increase)
     (define-key map (kbd "C--") 'text-scale-decrease)
     (define-key map (kbd "C-=") 'text-scale-increase)
@@ -250,7 +185,70 @@
 
 (when (require 'tabbar nil :noerror)
   (substitute-key-definition 'next-buffer 'tabbar-forward-tab gedit-mode-map)
-  (substitute-key-definition 'previous-buffer 'tabbar-backward-tab gedit-mode-map))
+  (substitute-key-definition 'previous-buffer 'tabbar-backward-tab gedit-mode-map)
+  (setq tabbar-buffer-groups-function 'gedit-tabbar-buffer-groups
+        tabbar-buffer-list-function 'gedit-tabbar-buffer-list)
+  (defadvice tabbar-buffer-tab-label (after fixup_tab_label_space activate)
+    "Add spaces around tab names for better readability."
+    (setq ad-return-value (concat " " ad-return-value " ")))
+  (set-face-attribute 'tabbar-separator nil
+                      :height 1
+                      :inherit 'mode-line
+                      :box nil)
+  (set-face-attribute 'tabbar-default nil
+                      :inherit 'mode-line
+                      :box nil)
+  (set-face-attribute 'tabbar-button nil
+                      :inherit 'mode-line
+                      :box nil)
+  (set-face-attribute 'tabbar-selected nil
+                      :inherit 'mode-line-buffer-id
+                      :box nil)
+  (set-face-attribute 'tabbar-unselected nil
+                      :inherit 'mode-line-inactive
+                      :box nil)
+  (add-hook 'global-gedit-mode-hook
+            (lambda () (tabbar-mode (if global-gedit-mode 1 -1)))))
+
+(when (require 'sr-speedbar nil :noerror)
+  (setq speedbar-show-unknown-files t
+        speedbar-use-images nil
+        sr-speedbar-auto-refresh nil
+        sr-speedbar-right-side nil)
+  (when (display-graphic-p)
+    (add-hook 'after-init-hook 'sr-speedbar-toggle)))
+
+(when (require 'shell-pop nil :noerror)
+  (shell-pop-set-internal-mode "term")
+  (shell-pop-set-internal-mode-shell "/bin/bash")
+  (shell-pop-set-window-height 20) ;; in percent
+  (shell-pop-set-window-position "top")
+  (ansi-color-for-comint-mode-on)
+
+  (setq comint-scroll-to-bottom-on-input t
+        explicit-shell-file-name "/bin/bash"
+        term-input-ignoredups t
+        term-scroll-show-maximum-output t))
+
+(defun gedit-remove-if-not (condp lst)
+  "Behave like (remove-if-not) without depending on CL."
+  (delq nil (mapcar (lambda (x) (and (funcall condp x) x)) lst)))
+
+(defun gedit-remove-if (condp lst)
+  "Behave like (remove-if) without depending on CL."
+  (delq nil (mapcar (lambda (x) (and (not (funcall condp x)) x)) lst)))
+
+(defun gedit-tabbar-buffer-list ()
+  "Hide the speedbar, because it's not helpful to tab to."
+  (gedit-remove-if
+   (lambda (buffer) (string= "*SPEEDBAR*" (buffer-name buffer)))
+   (tabbar-buffer-list)))
+
+(defun gedit-tabbar-buffer-groups ()
+  "Group Emacs special buffers separately than file-related buffers."
+  (list (cond ((buffer-file-name (current-buffer)) "files")
+              ((gedit-buffer-untitled-p (current-buffer)) "files")
+              (t "emacs"))))
 
 (defun gedit-move-text (arg)
   "Transpose lines/region up or down in the buffer."
