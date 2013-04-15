@@ -193,6 +193,7 @@
 (defvar gedit-mode-map
   (let ((map (make-sparse-keymap)))
     ;; This section is the faithful recreation of GEdit keybindings.
+    (define-key map (kbd "<return>") 'newline-and-indent)
     (define-key map (kbd "C-+") 'text-scale-increase)
     (define-key map (kbd "C--") 'text-scale-decrease)
     (define-key map (kbd "C-=") 'text-scale-increase)
