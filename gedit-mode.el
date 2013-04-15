@@ -348,10 +348,7 @@
                    'buffer-modified-p
                    (buffer-list)))))
     (mapc 'gedit-save-that-buffer to-save)
-    (message (concat "Wrote "
-                     (mapconcat 'file-name-nondirectory
-                                (mapcar 'buffer-file-name to-save)
-                                ", ")))))
+    (message (concat "Wrote " (mapconcat 'buffer-name to-save ", ")))))
 
 (defun gedit-new-file ()
   "Create a new empty buffer, untitled but numbered for uniqueness."
