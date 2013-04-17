@@ -386,14 +386,14 @@
 
 (defun gedit-kill-untitled-buffers ()
   "Close untitled (but unmodified) buffers."
-  (gedit-kill-certain-buffers 'gedit-buffer-untitled-p))
+  (gedit-kill-certain-buffers 'gedit-buffer-untitled-p)
+  (setq gedit-untitled-count 0))
 
 (defun gedit-kill-all-buffers ()
   "Close all the files."
   (interactive)
   (gedit-kill-certain-buffers 'buffer-file-name)
   (gedit-kill-untitled-buffers)
-  (setq gedit-untitled-count 0)
   (gedit-new-file))
 
 (defun gedit-speedbar-refresh ()
