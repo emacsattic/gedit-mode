@@ -236,19 +236,15 @@
         term-input-ignoredups t
         term-scroll-show-maximum-output t))
 
-;; Amusingly, sr-speedbar requires 'cl anyway, so this was a bit
-;; pointless, but at least I'm not making it *worse*...
-(defun gedit-remove-if-not (predicate list)
-  "Behave like (remove-if-not) without depending on CL."
-  (delq nil (mapcar (lambda (x) (and (funcall predicate x) x)) list)))
-
-(defun gedit-remove-if (predicate list)
-  "Behave like (remove-if) without depending on CL."
-  (delq nil (mapcar (lambda (x) (and (not (funcall predicate x)) x)) list)))
+;; The cl.el controversy is older than I am. I tried to avoid using
+;; it, however I was disgusted to learn how many modules reimplement
+;; its functions. I've decided that code reuse is a worthier goal than
+;; some kind of misguided vision of technical "purity".
+(require 'cl)
 
 (defun gedit-tabbar-buffer-list ()
   "Hide the speedbar, because it's not helpful to tab to."
-  (gedit-remove-if
+  (remove-if
    (lambda (buffer) (string= "*SPEEDBAR*" (buffer-name buffer)))
    (tabbar-buffer-list)))
 
@@ -347,11 +343,9 @@
 (defun gedit-save-all-buffers ()
   "Cycle through all buffers and save them."
   (interactive)
-  (let ((to-save (gedit-remove-if-not
-                  'buffer-file-name
-                  (gedit-remove-if-not
-                   'buffer-modified-p
-                   (buffer-list)))))
+  (let ((to-save (remove-if-not 'buffer-file-name
+                                (remove-if-not 'buffer-modified-p
+                                               (buffer-list)))))
     (mapc 'gedit-save-that-buffer to-save)
     (message (concat "Wrote " (mapconcat 'buffer-name to-save ", ")))))
 
@@ -386,8 +380,8 @@
 (defun gedit-kill-certain-buffers (predicate)
   "Kill all buffers matching predicate, except ones with unsaved changes."
   (mapc 'kill-buffer
-        (gedit-remove-if 'buffer-modified-p
-                         (gedit-remove-if-not predicate (buffer-list)))))
+        (remove-if 'buffer-modified-p
+                   (remove-if-not predicate (buffer-list)))))
 
 (defun gedit-kill-untitled-buffers ()
   "Close untitled (but unmodified) buffers."
