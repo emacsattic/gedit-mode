@@ -236,13 +236,15 @@
         term-input-ignoredups t
         term-scroll-show-maximum-output t))
 
-(defun gedit-remove-if-not (condp lst)
+;; Amusingly, sr-speedbar requires 'cl anyway, so this was a bit
+;; pointless, but at least I'm not making it *worse*...
+(defun gedit-remove-if-not (predicate list)
   "Behave like (remove-if-not) without depending on CL."
-  (delq nil (mapcar (lambda (x) (and (funcall condp x) x)) lst)))
+  (delq nil (mapcar (lambda (x) (and (funcall predicate x) x)) list)))
 
-(defun gedit-remove-if (condp lst)
+(defun gedit-remove-if (predicate list)
   "Behave like (remove-if) without depending on CL."
-  (delq nil (mapcar (lambda (x) (and (not (funcall condp x)) x)) lst)))
+  (delq nil (mapcar (lambda (x) (and (not (funcall predicate x)) x)) list)))
 
 (defun gedit-tabbar-buffer-list ()
   "Hide the speedbar, because it's not helpful to tab to."
