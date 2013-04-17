@@ -384,11 +384,15 @@
         (gedit-remove-if 'buffer-modified-p
                          (gedit-remove-if-not predicate (buffer-list)))))
 
+(defun gedit-kill-untitled-buffers ()
+  "Close untitled (but unmodified) buffers."
+  (gedit-kill-certain-buffers 'gedit-buffer-untitled-p))
+
 (defun gedit-kill-all-buffers ()
   "Close all the files."
   (interactive)
   (gedit-kill-certain-buffers 'buffer-file-name)
-  (gedit-kill-certain-buffers 'gedit-buffer-untitled-p)
+  (gedit-kill-untitled-buffers)
   (setq gedit-untitled-count 0)
   (gedit-new-file))
 
@@ -430,7 +434,13 @@
             ;;           (run-with-idle-timer 1 :repeat 'gedit-speedbar-refresh))
             ;;   (cancel-timer gedit-idle-timer))
 
-            (gedit-kill-certain-buffers 'gedit-buffer-untitled-p)
+            (gedit-kill-untitled-buffers)
+
+            (when global-gedit-mode
+              (add-hook 'find-file-hook 'gedit-kill-untitled-buffers))
+
+            (unless global-gedit-mode
+              (remove-hook 'find-file-hook 'gedit-kill-untitled-buffers))
 
             (switch-to-buffer
              (get-buffer-create
