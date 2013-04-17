@@ -90,6 +90,9 @@
 (defvar gedit-idle-timer nil
   "The value of the idle timer we use for refreshing the speedbar.")
 
+(defconst gedit-untitled-prefix "Untitled Document "
+  "Name new buffers by appending an integer to this value.")
+
 (defvar gedit-untitled-count 1
   "This value is used to count how many untitled buffers you have open.")
 
@@ -356,7 +359,7 @@
   (incf gedit-untitled-count)
   (switch-to-buffer
    (get-buffer-create
-    (concat "Untitled Document "
+    (concat gedit-untitled-prefix
             (number-to-string gedit-untitled-count)))))
 
 (defun gedit-find-file ()
@@ -375,7 +378,7 @@
 
 (defun gedit-buffer-untitled-p (buffer)
   "Is this buffer untitled?"
-  (or (string-prefix-p "Untitled Document " (buffer-name buffer))
+  (or (string-prefix-p gedit-untitled-prefix (buffer-name buffer))
       (string= "*scratch*" (buffer-name buffer))))
 
 (defun gedit-kill-certain-buffers (predicate)
@@ -444,7 +447,9 @@
 
             (switch-to-buffer
              (get-buffer-create
-              (if global-gedit-mode "Untitled Document 1" "*scratch*")))))
+              (if global-gedit-mode
+                  (concat gedit-untitled-prefix "1")
+                "*scratch*")))))
 
 (provide 'gedit-mode)
 
