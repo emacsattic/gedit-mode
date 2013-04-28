@@ -356,7 +356,8 @@
   (switch-to-buffer
    (get-buffer-create
     (concat gedit-untitled-prefix
-            (number-to-string gedit-untitled-count)))))
+            (number-to-string gedit-untitled-count))))
+  (text-mode))
 
 (defun gedit-find-file ()
   "Prompt for root if opening a file for which I lack write permissions."
