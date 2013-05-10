@@ -181,6 +181,10 @@
     (define-key map (kbd "C-S-n") 'make-frame-command)
     (define-key map (kbd "C-b") 'buffer-menu)
     (define-key map (kbd "C-t") 'shell-pop)
+    (define-key map (kbd "M-d") 'just-one-space)
+    (define-key map (kbd "M-f") 'rgrep)
+    (define-key map (kbd "M-i") 'imenu)
+    (define-key map (kbd "M-o") 'occur)
     (define-key map (kbd "M-s") 'gedit-save-all-buffers)
     (define-key map (kbd "M-w") 'gedit-kill-all-buffers)
     map)
@@ -235,6 +239,9 @@
         explicit-shell-file-name "/bin/bash"
         term-input-ignoredups t
         term-scroll-show-maximum-output t))
+
+(when (require 'ace-jump-mode nil :noerror)
+  (define-key gedit-mode-map (kbd "C-j") 'ace-jump-mode))
 
 ;; The cl.el controversy is older than I am. I tried to avoid using
 ;; it, however I was disgusted to learn how many modules reimplement
