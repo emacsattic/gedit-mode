@@ -6,7 +6,7 @@
 ;; URL: https://github.com/robru/gedit-mode
 ;; Version: 0.1
 ;; Keywords: gedit, keys, keybindings, easy, cua
-;; Package-Requires: ((tabbar "0") (sr-speedbar "0") (shell-pop "0") (move-text "0"))
+;; Package-Requires: ((tabbar "0") (sr-speedbar "0") (shell-pop "0") (move-text "0") (whole-line-or-region "0"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -87,6 +87,8 @@
 ;;
 ;; https://help.gnome.org/users/gedit/stable/gedit-shortcut-keys.html.en
 
+(require 'whole-line-or-region)
+
 (defvar gedit-idle-timer nil
   "The value of the idle timer we use for refreshing the speedbar.")
 
@@ -157,13 +159,13 @@
     (define-key map [C-M-next] 'next-buffer)
     (define-key map [C-M-prior] 'previous-buffer)
     (define-key map [C-S-g] 'isearch-repeat-backward)
-    (define-key map [C-S-m] 'gedit-comment-or-uncomment-dwim)
-    (define-key map [C-c] 'gedit-copy-region-or-current-line)
+    (define-key map [C-S-m] 'whole-line-or-region-comment-dwim-2)
+    (define-key map [C-c] 'gedit-copy-dwim)
     (define-key map [C-f9] 'shell-pop)
     (define-key map [C-g] 'isearch-repeat-forward)
     (define-key map [C-i] 'goto-line)
-    (define-key map [C-m] 'gedit-comment-or-uncomment-dwim)
-    (define-key map [C-x] 'gedit-cut-region-or-current-line)
+    (define-key map [C-m] 'whole-line-or-region-comment-dwim-2)
+    (define-key map [C-x] 'gedit-cut-dwim)
     (define-key map [M-f12] 'delete-trailing-whitespace)
     (define-key map [S-f7] 'ispell)
     (define-key map [f8] 'compile)
@@ -270,48 +272,19 @@
       (back-to-indentation)
     (move-beginning-of-line nil)))
 
-(defun gedit-region-or-line-beginning ()
-  "Identifies either the beginning of the line or the region, as appropriate."
-  (if (use-region-p)
-      (region-beginning)
-    (line-beginning-position)))
-
-(defun gedit-region-or-line-end (&optional offset)
-  "Identifies either the end of the line or the region, as appropriate."
-  (if (use-region-p)
-      (region-end)
-    (min (+ (or offset 0)
-            (line-end-position))
-         (point-max))))
-
-(defun gedit-comment-or-uncomment-whole-lines (beg end)
-  "Comment or uncomment only whole lines."
-  (interactive "r")
-  (comment-or-uncomment-region
-   (save-excursion (goto-char beg) (line-beginning-position))
-   (save-excursion (goto-char end) (line-end-position))))
-
-(defun gedit-comment-or-uncomment-dwim ()
-  "Do What I Mean: Comment either the current line, or the region."
-  (interactive)
-  (gedit-comment-or-uncomment-whole-lines
-   (gedit-region-or-line-beginning) (gedit-region-or-line-end)))
-
-(defun gedit-cut-region-or-current-line ()
-  "If no region is present, cut current line."
-  (interactive)
+(defun gedit-cut-dwim (prefix)
+  "Cut rectangle, line, or region as appropriate."
+  (interactive "*p")
   (if cua--rectangle
       (cua-cut-rectangle -1)
-    (kill-region (gedit-region-or-line-beginning)
-                 (gedit-region-or-line-end 1))))
+    (whole-line-or-region-kill-region prefix)))
 
-(defun gedit-copy-region-or-current-line ()
-  "If no region is present, copy current line."
-  (interactive)
+(defun gedit-copy-dwim (prefix)
+  "Copy rectangle, line, or region as appropriate."
+  (interactive "*p")
   (if cua--rectangle
       (cua-copy-rectangle -1)
-    (copy-region-as-kill (gedit-region-or-line-beginning)
-                         (gedit-region-or-line-end 1))))
+    (whole-line-or-region-copy-region-as-kill prefix)))
 
 (defun gedit-save-that-buffer (buffer)
   "Save the specified buffer."
