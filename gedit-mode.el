@@ -432,6 +432,10 @@
 ;;;###autoload
 (define-globalized-minor-mode global-gedit-mode gedit-mode gedit-mode)
 
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+
 (add-hook 'global-gedit-mode-hook
           (lambda ()
             "Set mode state only when enabling or disabling globally."
