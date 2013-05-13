@@ -6,7 +6,7 @@
 ;; URL: https://github.com/robru/gedit-mode
 ;; Version: 0.1
 ;; Keywords: gedit, keys, keybindings, easy, cua
-;; Package-Requires: ((tabbar "0") (sr-speedbar "0") (shell-pop "0"))
+;; Package-Requires: ((tabbar "0") (sr-speedbar "0") (shell-pop "0") (move-text "0"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -164,9 +164,7 @@
     (define-key map [C-i] 'goto-line)
     (define-key map [C-m] 'gedit-comment-or-uncomment-dwim)
     (define-key map [C-x] 'gedit-cut-region-or-current-line)
-    (define-key map [M-down] 'gedit-transpose-text-down)
     (define-key map [M-f12] 'delete-trailing-whitespace)
-    (define-key map [M-up] 'gedit-transpose-text-up)
     (define-key map [S-f7] 'ispell)
     (define-key map [f8] 'compile)
     (define-key map [f9] 'sr-speedbar-toggle)
@@ -192,6 +190,10 @@
 
 (when (require 'visual-regexp nil :noerror)
   (substitute-key-definition 'query-replace 'vr/query-replace gedit-mode-map))
+
+(when (require 'move-text nil :noerror)
+  (define-key gedit-mode-map [M-down] 'move-text-down)
+  (define-key gedit-mode-map [M-up] 'move-text-up))
 
 (when (require 'tabbar nil :noerror)
   (substitute-key-definition 'next-buffer 'tabbar-forward-tab gedit-mode-map)
@@ -260,38 +262,6 @@
   (list (cond ((buffer-file-name (current-buffer)) "files")
               ((gedit-buffer-untitled-p (current-buffer)) "files")
               (t "emacs"))))
-
-(defun gedit-move-text (arg)
-  "Transpose lines/region up or down in the buffer."
-   (cond
-    ((and mark-active transient-mark-mode)
-     (if (> (point) (mark))
-            (exchange-point-and-mark))
-     (let ((column (current-column))
-              (text (delete-and-extract-region (point) (mark))))
-       (forward-line arg)
-       (move-to-column column t)
-       (set-mark (point))
-       (insert text)
-       (exchange-point-and-mark)
-       (setq deactivate-mark nil)))
-    (t
-     (beginning-of-line)
-     (when (or (> arg 0) (not (bobp)))
-       (forward-line)
-       (when (or (< arg 0) (not (eobp)))
-            (transpose-lines arg))
-       (forward-line -1)))))
-
-(defun gedit-transpose-text-down (arg)
-   "Move regionor current line arg lines down."
-   (interactive "*p")
-   (gedit-move-text arg))
-
-(defun gedit-transpose-text-up (arg)
-   "Move region or current line arg lines up."
-   (interactive "*p")
-   (gedit-move-text (- arg)))
 
 (defun gedit-back-to-indentation-or-home ()
   "Toggle point between beginning of line, or first non-whitespace character."
