@@ -89,9 +89,6 @@
 
 (require 'whole-line-or-region)
 
-(defvar gedit-idle-timer nil
-  "The value of the idle timer we use for refreshing the speedbar.")
-
 (defconst gedit-untitled-prefix "Untitled Document "
   "Name new buffers by appending an integer to this value.")
 
@@ -382,11 +379,6 @@
 (add-hook 'global-gedit-mode-hook
           (lambda ()
             "Set mode state only when enabling or disabling globally."
-            ;; Disable timer because it screws up the tag display.
-            ;; (if global-gedit-mode
-            ;;     (setq gedit-idle-timer
-            ;;           (run-with-idle-timer 1 :repeat 'gedit-speedbar-refresh))
-            ;;   (cancel-timer gedit-idle-timer))
 
             (gedit-kill-untitled-buffers)
 
