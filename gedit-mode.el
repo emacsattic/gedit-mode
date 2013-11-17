@@ -225,9 +225,7 @@
   (setq speedbar-show-unknown-files t
         speedbar-use-images nil
         sr-speedbar-auto-refresh nil
-        sr-speedbar-right-side nil)
-  (when (display-graphic-p)
-    (add-hook 'after-init-hook 'sr-speedbar-open)))
+        sr-speedbar-right-side nil))
 
 (when (require 'shell-pop nil :noerror)
   (shell-pop-set-internal-mode "term")
